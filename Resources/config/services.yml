@@ -1,0 +1,9 @@
+services:
+  # TDLibService service
+  tdlib_service:
+    public: true
+    class: Yaroslavche\TDLibBundle\Service\TDLibService
+    arguments:
+      $apiId: '%api_id%'
+      $apiHash: '%api_hash%'
+  Yaroslavche\TDLibBundle\Service\TDLibService: '@tdlib_service'

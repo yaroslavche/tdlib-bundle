@@ -1,0 +1,28 @@
+{
+  "name": "yaroslavche/tdlib-bundle",
+  "type": "symfony-bundle",
+  "description": "Symfony tdlib/td API bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "yaroslavche",
+      "email": "yaroslav429@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "ext-tdlib": "*",
+    "symfony/framework-bundle": "^3.4|^4.1",
+    "symfony/config": "^3.4|^4.1",
+    "symfony/dependency-injection": "^3.4|^4.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Yaroslavche\\TDLibBundle\\": ""
+    }
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^4.2",
+    "phptdlib/phptdlib-stubs": "@dev"
+  }
+}
