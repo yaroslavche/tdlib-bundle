@@ -22,8 +22,8 @@ class YaroslavcheTDLibExtension extends Extension implements PrependExtensionInt
             throw new \RuntimeException('FrameworkBundle must be installed to use YaroslavcheTDLibBundle.');
         }
         $container->prependExtensionConfig('tdlib', [
-            'api_id' => 11111,
-            'api_hash' => 'abcdef1234567890abcdef1234567890'
+            'parameters' => [],
+            'client' => []
         ]);
     }
 
@@ -40,15 +40,15 @@ class YaroslavcheTDLibExtension extends Extension implements PrependExtensionInt
         $loader->load('services.yml');
 
         $tdlibServiceDefinition = new Definition(TDLibService::class, [
-            'apiId',
-            'apiHash'
+            'parameters',
+            'client'
         ]);
         $tdlibServiceDefinition->setArguments([
-            $processedConfig['api_id'],
-            $processedConfig['api_hash'],
+            $processedConfig['parameters'],
+            $processedConfig['client'],
         ]);
         $container->setDefinition('tdlib_service', $tdlibServiceDefinition);
 
-//        $container->setParameter('yaroslavche_tdlib.default_parameters', $processedConfig['default_parameters']);
+//        $container->setParameter('yaroslavche_tdlib.parameters', $processedConfig['parameters']);
     }
 }

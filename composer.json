@@ -12,6 +12,7 @@
   "require": {
     "php": "^7.1",
     "ext-tdlib": "*",
+    "ext-json": "*",
     "symfony/framework-bundle": "^3.4|^4.1",
     "symfony/config": "^3.4|^4.1",
     "symfony/dependency-injection": "^3.4|^4.1"
