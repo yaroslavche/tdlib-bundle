@@ -1,9 +1,5 @@
 ## Installation and configuration
-Install bundle with `composer`
-```bash
-composer require yaroslavche/tdlib-bundle
-```
-and create file `config/packages/tdlib.yaml` with following content
+Create file `config/packages/tdlib.yaml` with following content
 ```yaml
 # config/packages/tdlib.yaml
 
@@ -26,6 +22,10 @@ yaroslavche_td_lib:
     ignore_file_names: true
   client:
     encryption_key: "some_secret_key"
+```
+and install bundle with `composer`
+```bash
+composer require yaroslavche/tdlib-bundle
 ```
 
 ## Usage
