@@ -10,20 +10,41 @@
     }
   ],
   "require": {
-    "php": "^7.1",
+    "php": "^7.2",
     "ext-tdlib": "*",
     "ext-json": "*",
-    "symfony/framework-bundle": "^3.4|^4.1",
-    "symfony/config": "^3.4|^4.1",
-    "symfony/dependency-injection": "^3.4|^4.1"
+    "symfony/framework-bundle": "^4.3",
+    "symfony/config": "^4.3",
+    "symfony/dependency-injection": "^4.3"
   },
   "autoload": {
     "psr-4": {
-      "Yaroslavche\\TDLibBundle\\": ""
+      "Yaroslavche\\TDLibBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Yaroslavche\\TDLibBundle\\Tests\\": "tests/"
     }
   },
   "require-dev": {
-    "symfony/var-dumper": "^4.2",
-    "phptdlib/phptdlib-stubs": "@dev"
+    "phptdlib/phptdlib-stubs": "@dev",
+    "symfony/phpunit-bridge": "^4.3",
+    "phpunit/phpunit": "^8.2",
+    "symfony/debug-pack": "^1.0",
+    "phpstan/phpstan": "^0.11.12",
+    "squizlabs/php_codesniffer": "^3.4",
+    "thecodingmachine/phpstan-strict-rules": "^0.11.2",
+    "infection/infection": "^0.13.4",
+    "roave/backward-compatibility-check": "^3.0"
+  },
+  "scripts": {
+    "cscheck": "phpcs",
+    "csfix": "phpcbf",
+    "phpstan": "phpstan analyse src/ -c phpstan.neon --level=7 --no-progress -vvv --memory-limit=1024M",
+    "phpunit": "phpunit",
+    "infection": "infection --min-msi=50 --min-covered-msi=70 --log-verbosity=all",
+    "clover": "phpunit --coverage-clover clover.xml",
+    "bccheck": "roave-backward-compatibility-check"
   }
 }

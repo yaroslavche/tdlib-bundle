@@ -5,17 +5,14 @@ namespace Yaroslavche\TDLibBundle\Service;
 
 use TDLib\JsonClient;
 
-Error_Reporting(E_ALL);
-ini_set('display_errors', '1');
-
-class TDLibService
+class TDLib
 {
     public const AUTHORIZATION_STATE_READY = 'authorizationStateReady';
     public const AUTHORIZATION_STATE_WAIT_PHONE_NUMBER = 'authorizationStateWaitPhoneNumber';
     public const AUTHORIZATION_STATE_WAIT_CODE = 'authorizationStateWaitCode';
 
     /**
-     * @var JsonClient $clients
+     * @var JsonClient $client
      */
     private $client;
 
@@ -24,6 +21,11 @@ class TDLibService
      */
     private $authorizationState;
 
+    /**
+     * TDLib constructor.
+     * @param string[] $parameters
+     * @param string[] $client
+     */
     public function __construct(array $parameters, array $client)
     {
         $this->client = new JsonClient();
@@ -31,34 +33,74 @@ class TDLibService
         $this->setDatabaseEncryptionKey($client['encryption_key']);
     }
 
-    private function checkReceivedResponses()
+    /**
+     * @return string[]
+     */
+    private function checkReceivedResponses(): array
     {
         $receivedResponses = $this->client->getReceivedResponses();
-        dump($receivedResponses);
-        foreach ($receivedResponses as $response){
+        foreach ($receivedResponses as $response) {
             $response = json_decode($response);
             $type = $response->{'@type'} ?? '';
-            switch ($type){
+            switch ($type) {
                 case 'updateAuthorizationState':
                     $this->authorizationState = $response->{'authorization_state'}->{'@type'};
                     break;
             }
         }
+        return $receivedResponses;
     }
 
-    private function query(array $queryArray, ?int $timeout = null): ?\stdClass
+    /**
+     * @param string[] $queryArray
+     * @param int|null $timeout
+     * @return mixed|null
+     * @throws \Exception
+     */
+    private function query(array $queryArray, ?int $timeout = null)
     {
         $responseObject = null;
-        try {
-            $responseJsonString = $this->client->query(json_encode($queryArray), $timeout ?? 1);
-            $responseObject = json_decode($responseJsonString);
-            $this->checkReceivedResponses();
-        } catch (\Exception $exception) {
-            dump(__CLASS__ . '::' . __METHOD__, $exception);
+        $queryString = json_encode($queryArray);
+        if (!$queryString) {
+            return;
         }
+        $responseJsonString = $this->client->query($queryString, $timeout ?? 10);
+        $responseObject = json_decode($responseJsonString);
+        $this->checkReceivedResponses();
         return $responseObject;
     }
 
+    /**
+     * experimental
+     * @param string[] $queryArray
+     * @param string $waitType
+     * @param int|null $timeout
+     * @return mixed|null
+     * @throws \Exception
+     */
+    private function waitResponse(array $queryArray, string $waitType, ?int $timeout = null)
+    {
+        $responseObject = null;
+        $queryString = json_encode($queryArray);
+        if (!$queryString) {
+            return;
+        }
+        $responseJsonString = $this->client->query($queryString, $timeout ?? 10);
+        $responseObject = json_decode($responseJsonString);
+        while (true) {
+            usleep(100);
+            $receivedResponses = $this->checkReceivedResponses();
+            foreach ($receivedResponses as $response) {
+                $response = json_decode($response);
+                $type = $response->{'@type'} ?? '';
+                if ($type === $waitType) {
+                    return $response;
+                }
+            }
+        }
+        return $responseObject;
+    }
+    
     /**
      * authorizationState sets in $this->checkReceivedResponses() if responses contains type updateAuthorizationState
      *
@@ -71,8 +113,14 @@ class TDLibService
         return $this->authorizationState;
     }
 
+    /**
+     * @param  string[] $parameters
+     * @return mixed|null
+     */
     public function setTdlibParameters(array $parameters = [])
     {
+        /** @todo wtf, remove */
+        /** @var string[] $queryArray */
         $queryArray = [
             '@type' => 'setTdlibParameters',
             'parameters' => $parameters
@@ -80,6 +128,9 @@ class TDLibService
         return $this->query($queryArray);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function setDatabaseEncryptionKey(?string $newEncryptionKey = null)
     {
         $queryArray = [
@@ -91,8 +142,13 @@ class TDLibService
         return $this->query($queryArray);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function setAuthenticationPhoneNumber(string $phoneNumber, bool $allowFlashCall = false, bool $isCurrentPhoneNumber = false)
     {
+        /** @todo wtf, remove */
+        /** @var string[] $queryArray */
         $queryArray = [
             '@type' => 'setAuthenticationPhoneNumber',
             'phone_number' => $phoneNumber,
@@ -102,6 +158,9 @@ class TDLibService
         return $this->query($queryArray, 3);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function checkAuthenticationCode(string $code, string $firstName, string $lastName)
     {
         $queryArray = [
@@ -113,6 +172,9 @@ class TDLibService
         return $this->query($queryArray);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function searchPublicChat(string $username)
     {
         $queryArray = [
@@ -122,6 +184,9 @@ class TDLibService
         return $this->query($queryArray);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function logOut()
     {
         $queryArray = [
@@ -130,6 +195,9 @@ class TDLibService
         return $this->query($queryArray);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getMe()
     {
         $queryArray = [

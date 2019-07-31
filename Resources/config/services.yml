@@ -1,9 +1,0 @@
-services:
-  # TDLibService service
-  tdlib_service:
-    public: true
-    class: Yaroslavche\TDLibBundle\Service\TDLibService
-    arguments:
-      $defaultParameters: '%default_parameters%'
-      $clients: '%clients%'
-  Yaroslavche\TDLibBundle\Service\TDLibService: '@tdlib_service'

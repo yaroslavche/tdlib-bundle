@@ -1,0 +1,35 @@
+language: php
+sudo: false
+cache:
+  directories:
+    - "$HOME/.composer/cache/files"
+#env:
+#  global:
+#    - secure:
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.2
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="max[self]=0"
+    - php: 7.3
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="max[self]=0"
+    - php: 7.3
+      env: STABILITY="dev" TEST_GROUP=canFail
+  allow_failures:
+    - env: STABILITY="dev" TEST_GROUP=canFail
+before_install:
+  - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
+  - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES};
+    fi;
+install:
+  - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
+script:
+  - composer validate --strict --no-check-lock
+  - composer cscheck
+  - composer phpstan
+  - composer phpunit
+#  - composer infection
+#  - composer clover
+#  - composer bccheck
+after_success:
+#  - bash <(curl -s https://codecov.io/bash)

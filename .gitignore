@@ -1,4 +1,9 @@
-.idea/
+/.idea/
+/vendor/
+/composer.lock
+/phpunit.xml
+/tests/cache/
+.phpunit.result.cache
 .php_cs.cache
-vendor/
-composer.lock
+clover.xml
+infection.log
