@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Yaroslavche\TDLibBundle\Service;
 
-use Yaroslavche\TDLibBundle\Exception\InvalidApiHashException;
-use Yaroslavche\TDLibBundle\Exception\InvalidApiIdException;
 use Yaroslavche\TDLibBundle\Exception\InvalidArgumentException;
 use Yaroslavche\TDLibBundle\Exception\InvalidDatabaseEncryptionKeyException;
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
@@ -20,8 +18,6 @@ class TDLib
      * TDLib constructor.
      * @param string[]|bool[]|int[] $parameters
      * @param string[] $client
-     * @throws InvalidApiHashException
-     * @throws InvalidApiIdException
      * @throws InvalidArgumentException
      * @throws InvalidDatabaseEncryptionKeyException
      * @throws InvalidResponseException

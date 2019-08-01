@@ -5,8 +5,6 @@ namespace Yaroslavche\TDLibBundle\TDLib;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use TDApi\TDLibParameters;
 use TDLib\JsonClient;
-use Yaroslavche\TDLibBundle\Exception\InvalidApiHashException;
-use Yaroslavche\TDLibBundle\Exception\InvalidApiIdException;
 use Yaroslavche\TDLibBundle\Exception\InvalidArgumentException;
 use Yaroslavche\TDLibBundle\Exception\InvalidDatabaseEncryptionKeyException;
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
@@ -32,9 +30,7 @@ abstract class AbstractJsonClient
     /**
      * AbstractClient constructor.
      * @param string[]|int[]|bool[] $tdlibParameters
-     * @param string[] $clientConfig
-     * @throws InvalidApiHashException
-     * @throws InvalidApiIdException
+     * @param string[]|int[]|bool[] $clientConfig
      * @throws InvalidArgumentException
      * @throws InvalidDatabaseEncryptionKeyException
      * @throws InvalidResponseException
@@ -78,7 +74,7 @@ abstract class AbstractJsonClient
 
     /**
      * @param string $type
-     * @param string[]|bool[]|int[]|array[] $params
+     * @param mixed[] $params
      * @return ResponseInterface
      * @throws InvalidArgumentException
      * @throws InvalidResponseException
@@ -103,8 +99,6 @@ abstract class AbstractJsonClient
 
     /**
      * @param bool|null $force
-     * @throws InvalidApiHashException
-     * @throws InvalidApiIdException
      * @throws InvalidArgumentException
      * @throws InvalidDatabaseEncryptionKeyException
      * @throws InvalidResponseException
@@ -114,12 +108,6 @@ abstract class AbstractJsonClient
     {
         if (!$force && $this->jsonClient instanceof JsonClient) {
             return;
-        }
-        if (!isset($this->tdlibParameters[TDLibParameters::API_ID])) {
-            throw new InvalidApiIdException();
-        }
-        if (!isset($this->tdlibParameters[TDLibParameters::API_HASH])) {
-            throw new InvalidApiHashException();
         }
         $this->jsonClient = new JsonClient();
         $this->jsonClient->setDefaultTimeout(floatval($this->clientConfig['default_timeout']));
