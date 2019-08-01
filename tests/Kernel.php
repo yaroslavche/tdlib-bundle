@@ -9,6 +9,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as SymfonyKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
+use TDApi\TDLibParameters;
 use Yaroslavche\TDLibBundle\YaroslavcheTDLibBundle;
 
 class Kernel extends SymfonyKernel
@@ -19,7 +20,7 @@ class Kernel extends SymfonyKernel
      * Kernel constructor.
      *
      * @param string $env
-     * @param bool   $debug
+     * @param bool $debug
      */
     public function __construct(string $env = 'test', bool $debug = true)
     {
@@ -42,18 +43,37 @@ class Kernel extends SymfonyKernel
     /**
      * @return array
      */
-    public function getBundleConfig(): array
+    public static function getBundleConfig(): array
     {
         return [
             'parameters' => [
-                'api_id' => 11111,
-                'api_hash' => 'aaaaaaaaaaa'
+                /** required */
+                TDLibParameters::API_ID => 11111,
+                TDLibParameters::API_HASH => 'aaaaaaaaaaa',
+                TDLibParameters::SYSTEM_LANGUAGE_CODE => 'en',
+                TDLibParameters::DEVICE_MODEL => 'test',
+                TDLibParameters::SYSTEM_VERSION => 'stable',
+                TDLibParameters::APPLICATION_VERSION => '0.0.1',
+                /** optional */
+                TDLibParameters::USE_TEST_DC => true,
+                TDLibParameters::IGNORE_FILE_NAMES => true,
+                TDLibParameters::USE_SECRET_CHATS => true,
+                TDLibParameters::USE_MESSAGE_DATABASE => true,
+                TDLibParameters::USE_CHAT_INFO_DATABASE => true,
+                TDLibParameters::USE_FILE_DATABASE => true,
+                TDLibParameters::FILES_DIRECTORY => '/var/tmp/tdlib',
+                TDLibParameters::DATABASE_DIRECOTRY => '/var/tmp/tdlib',
             ],
+            'client' => [
+                'encryption_key' => '',
+                'default_timeout' => 0.5,
+                'auto_init' => true
+            ]
         ];
     }
 
     /**
-     * @param  RouteCollectionBuilder $routes
+     * @param RouteCollectionBuilder $routes
      * @throws LoaderLoadException
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
@@ -63,15 +83,16 @@ class Kernel extends SymfonyKernel
 
     /**
      * @param ContainerBuilder $c
-     * @param LoaderInterface  $loader
+     * @param LoaderInterface $loader
      */
     protected function configureContainer(ContainerBuilder $c, LoaderInterface $loader)
     {
         $c->loadFromExtension(
-            'framework', [
-            'secret' => 'test'
+            'framework',
+            [
+                'secret' => 'test'
             ]
         );
-        $c->loadFromExtension('yaroslavche_tdlib', $this->getBundleConfig());
+        $c->loadFromExtension('yaroslavche_tdlib', static::getBundleConfig());
     }
 }

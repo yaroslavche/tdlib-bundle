@@ -15,7 +15,8 @@
     "ext-json": "*",
     "symfony/framework-bundle": "^4.3",
     "symfony/config": "^4.3",
-    "symfony/dependency-injection": "^4.3"
+    "symfony/dependency-injection": "^4.3",
+    "symfony/options-resolver": "^4.3"
   },
   "autoload": {
     "psr-4": {
