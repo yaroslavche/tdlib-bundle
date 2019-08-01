@@ -34,8 +34,6 @@ composer require yaroslavche/tdlib-bundle
 
 ### JsonClient
 ```php
-<?php
-
 use TDApi\LogConfiguration;
 use Yaroslavche\TDLibBundle\TDLib\JsonClient;
 use Yaroslavche\TDLibBundle\TDLib\Response\UpdateAuthorizationState;
@@ -59,11 +57,11 @@ else if ($authorizationStateResponse->getType() === UpdateAuthorizationState::AU
 ```
 
 ### TDLib Service
-Service provide `getJsonClient` method, which will return `Yaroslavche\TDLibBundle\TDLib\JsonClient`. Inject service and use as you need. For example:
+Service provides `getJsonClient` method, which will return `Yaroslavche\TDLibBundle\TDLib\JsonClient`. Inject service and use as you need. For example:
 ```php
 use Yaroslavche\TDLibBundle\Service\TDLib;
 
-final class SearchPublicChatController
+final class GetMeController
 {
     /**
      * @Route("/getMe", name="getMe")
