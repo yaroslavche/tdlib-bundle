@@ -43,6 +43,11 @@ $tdlibParameters = [/** from config */];
 $clientConfig = [/** from config */];
 $client = new JsonClient($tdlibParameters, $clientConfig);
 
+if ($clientConfig['auto_init'] === false)
+{
+    $client->initJsonClient();
+}
+
 var_dump($client->getOption('version'));
 
 $authorizationStateResponse = $client->getAuthorizationState();
