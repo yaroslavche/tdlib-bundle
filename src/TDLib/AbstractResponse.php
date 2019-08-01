@@ -6,7 +6,7 @@ namespace Yaroslavche\TDLibBundle\TDLib;
 use stdClass;
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
 
-class Response implements ResponseInterface
+class AbstractResponse implements ResponseInterface
 {
     /** @var string $rawResponse */
     private $rawResponse;
@@ -26,7 +26,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Response constructor.
+     * AbstractResponse constructor.
      * @param string $rawResponse
      * @throws InvalidResponseException
      */

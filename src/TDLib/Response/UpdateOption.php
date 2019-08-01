@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Yaroslavche\TDLibBundle\TDLib\Response;
 
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
-use Yaroslavche\TDLibBundle\TDLib\Response;
+use Yaroslavche\TDLibBundle\TDLib\AbstractResponse;
 
-class UpdateOption extends Response
+class UpdateOption extends AbstractResponse
 {
     const OPTION_VALUE_INTEGER = 'optionValueInteger';
     const OPTION_VALUE_BOOLEAN = 'optionValueBoolean';

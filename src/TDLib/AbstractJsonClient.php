@@ -86,7 +86,7 @@ abstract class AbstractJsonClient
         if (!$query) {
             throw new InvalidArgumentException();
         }
-        return Response::fromRaw($this->jsonClient->query($query));
+        return AbstractResponse::fromRaw($this->jsonClient->query($query));
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class AbstractJsonClient
     {
         $responses = $this->jsonClient->getReceivedResponses();
         foreach ($responses as $rawResponse) {
-            $responseObject = Response::fromRaw($rawResponse);
+            $responseObject = AbstractResponse::fromRaw($rawResponse);
             switch ($responseObject->getType()) {
                 case 'updateOption':
                     $this->updateOption(UpdateOption::fromRaw($rawResponse));
