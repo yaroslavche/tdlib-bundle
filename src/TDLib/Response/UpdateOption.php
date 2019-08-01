@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Yaroslavche\TDLibBundle\TDLib\Response;
 
@@ -48,9 +49,9 @@ class UpdateOption extends Response
     }
 
     /**
-     * @return string|null
+     * @return string|bool|int|null
      */
-    public function getValue(): ?string
+    public function getValue()
     {
         return $this->value;
     }
