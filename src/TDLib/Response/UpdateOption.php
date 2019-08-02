@@ -5,8 +5,9 @@ namespace Yaroslavche\TDLibBundle\TDLib\Response;
 
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
 use Yaroslavche\TDLibBundle\TDLib\AbstractResponse;
+use Yaroslavche\TDLibBundle\TDLib\ResponseInterface;
 
-class UpdateOption extends AbstractResponse
+class UpdateOption extends AbstractResponse implements ResponseInterface
 {
     const OPTION_VALUE_INTEGER = 'optionValueInteger';
     const OPTION_VALUE_BOOLEAN = 'optionValueBoolean';
@@ -27,18 +28,8 @@ class UpdateOption extends AbstractResponse
     public function __construct(string $rawResponse)
     {
         parent::__construct($rawResponse);
-        $response = json_decode($rawResponse);
-        if (!property_exists($response, 'name')) {
-            throw new InvalidResponseException('', InvalidResponseException::UNRECOGNIZED_PROPERTY);
-        }
-        if (!property_exists($response, 'value')) {
-            throw new InvalidResponseException('', InvalidResponseException::UNRECOGNIZED_PROPERTY);
-        }
-        $optionValue = $response->value;
-        if (!property_exists($optionValue, 'value') || !property_exists($optionValue, '@type')) {
-            throw new InvalidResponseException('', InvalidResponseException::UNRECOGNIZED_PROPERTY);
-        }
-        $this->name = $response->name;
+        $this->name = $this->getProperty('name');
+        $optionValue = $this->getProperty('value');
         $this->value = $optionValue->value;
         $this->valueType = $optionValue->{'@type'};
     }

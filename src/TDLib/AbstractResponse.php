@@ -10,6 +10,8 @@ class AbstractResponse implements ResponseInterface
 {
     /** @var string $rawResponse */
     private $rawResponse;
+    /** @var stdClass|null $response */
+    private $response;
     /** @var string|null $type */
     private $type;
     /** @var string|null $extra */
@@ -40,6 +42,7 @@ class AbstractResponse implements ResponseInterface
             throw new InvalidResponseException('', InvalidResponseException::UNRECOGNIZED_TYPE);
         }
         $this->rawResponse = $rawResponse;
+        $this->response = $response;
         $this->type = $response->{'@type'};
         $this->extra = property_exists($response, '@extra') ? $response->{'@extra'} : null;
     }
@@ -58,5 +61,18 @@ class AbstractResponse implements ResponseInterface
     public function getExtra(): ?string
     {
         return $this->extra;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed|null
+     * @throws InvalidResponseException
+     */
+    protected function getProperty(string $name)
+    {
+        if (!property_exists($this->response, $name)) {
+            throw new InvalidResponseException('', InvalidResponseException::UNRECOGNIZED_PROPERTY);
+        }
+        return $this->response->{$name};
     }
 }
