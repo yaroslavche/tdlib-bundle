@@ -49,7 +49,7 @@ class Kernel extends SymfonyKernel
             'parameters' => [
                 /** required */
                 TDLibParameters::API_ID => 11111,
-                TDLibParameters::API_HASH => 'aaaaaaaaaaa',
+                TDLibParameters::API_HASH => '1111111111111111111111111',
                 TDLibParameters::SYSTEM_LANGUAGE_CODE => 'en',
                 TDLibParameters::DEVICE_MODEL => 'test',
                 TDLibParameters::SYSTEM_VERSION => 'stable',
@@ -62,12 +62,12 @@ class Kernel extends SymfonyKernel
                 TDLibParameters::USE_CHAT_INFO_DATABASE => true,
                 TDLibParameters::USE_FILE_DATABASE => true,
                 TDLibParameters::FILES_DIRECTORY => '/var/tmp/tdlib',
-                TDLibParameters::DATABASE_DIRECOTRY => '/var/tmp/tdlib',
+                TDLibParameters::DATABASE_DIRECTORY => '/var/tmp/tdlib',
             ],
             'client' => [
                 'encryption_key' => '',
-                'default_timeout' => 0.5,
-                'auto_init' => true
+                'default_timeout' => 3,
+                'auto_init' => true,
             ]
         ];
     }

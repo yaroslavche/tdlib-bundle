@@ -42,7 +42,7 @@ abstract class AbstractJsonClient
         $this->optionsResolver = new OptionsResolver();
         $this->tdlibParameters = $this->resolve($tdlibParameters, [
             TDLibParameters::USE_TEST_DC => true,
-            TDLibParameters::DATABASE_DIRECOTRY => '/var/tmp/tdlib',
+            TDLibParameters::DATABASE_DIRECTORY => '/var/tmp/tdlib',
             TDLibParameters::FILES_DIRECTORY => '/var/tmp/tdlib',
             TDLibParameters::USE_FILE_DATABASE => true,
             TDLibParameters::USE_CHAT_INFO_DATABASE => true,
@@ -76,17 +76,18 @@ abstract class AbstractJsonClient
     /**
      * @param string $type
      * @param mixed[] $params
+     * @param float|null $timeout
      * @return ResponseInterface
      * @throws InvalidArgumentException
      * @throws InvalidResponseException
      */
-    public function query(string $type, array $params = []): ResponseInterface
+    public function query(string $type, array $params = [], ?float $timeout = null): ResponseInterface
     {
         $query = json_encode(array_merge(['@type' => $type], $params));
         if (!$query) {
             throw new InvalidArgumentException();
         }
-        $rawResponse = $this->jsonClient->query($query);
+        $rawResponse = $this->jsonClient->query($query); //, $timeout ?? $this->clientConfig['default_timeout']);
         $response = AbstractResponse::fromRaw($rawResponse);
         $responseClass = sprintf('%s\\Response\\%s', __NAMESPACE__, ucfirst($response->getType()));
         if (class_exists($responseClass)) {
@@ -118,7 +119,7 @@ abstract class AbstractJsonClient
         }
         $this->jsonClient = new JsonClient();
         $this->jsonClient->setDefaultTimeout(floatval($this->clientConfig['default_timeout']));
-
+        /** set tdlib parameters */
         $setParametersResponse = $this->query('setTdlibParameters', [
             'parameters' => $this->tdlibParameters,
         ]);
@@ -132,7 +133,6 @@ abstract class AbstractJsonClient
         if ($setEncryptionKeyResult->getType() !== 'ok') {
             throw new InvalidDatabaseEncryptionKeyException();
         }
-
         /** check all received responses */
         $this->handleResponses();
     }

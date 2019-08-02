@@ -54,7 +54,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] changePhoneNumber
 - [ ] changeStickerSet
 - [ ] checkAuthenticationBotToken
-- [X] checkAuthenticationCode
+- [ ] checkAuthenticationCode
 - [ ] checkAuthenticationPassword
 - [ ] checkChangePhoneNumberCode
 - [ ] checkChatInviteLink
@@ -121,7 +121,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] getAllPassportElements
 - [ ] getArchivedStickerSets
 - [ ] getAttachedStickerSets
-- [X] getAuthorizationState
+- [ ] getAuthorizationState
 - [ ] getBasicGroup
 - [ ] getBasicGroupFullInfo
 - [ ] getBlockedUsers
@@ -156,7 +156,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] getLanguagePackStrings
 - [ ] getLocalizationTargetInfo
 - [ ] getMapThumbnailFile
-- [X] getMe
+- [ ] getMe
 - [ ] getMessage
 - [ ] getMessages
 - [ ] getNetworkStatistics
@@ -204,7 +204,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] joinChat
 - [ ] joinChatByInviteLink
 - [ ] leaveChat
-- [X] logOut
+- [ ] logOut
 - [ ] openChat
 - [ ] openMessageContent
 - [ ] optimizeStorage
@@ -247,7 +247,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] searchHashtags
 - [ ] searchInstalledStickerSets
 - [ ] searchMessages
-- [X] searchPublicChat
+- [ ] searchPublicChat
 - [ ] searchPublicChats
 - [ ] searchSecretMessages
 - [ ] searchStickers
@@ -270,7 +270,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] sendPhoneNumberVerificationCode
 - [ ] setAccountTtl
 - [ ] setAlarm
-- [X] setAuthenticationPhoneNumber
+- [ ] setAuthenticationPhoneNumber
 - [ ] setBio
 - [ ] setBotUpdatesStatus
 - [ ] setChatClientData
@@ -281,7 +281,7 @@ class JsonClient extends AbstractJsonClient
 - [ ] setChatTitle
 - [ ] setCustomLanguagePack
 - [ ] setCustomLanguagePackString
-- [X] setDatabaseEncryptionKey
+- [ ] setDatabaseEncryptionKey
 - [ ] setFileGenerationProgress
 - [ ] setGameScore
 - [ ] setInlineGameScore

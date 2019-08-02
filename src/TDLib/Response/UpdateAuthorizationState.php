@@ -14,6 +14,7 @@ class UpdateAuthorizationState extends AbstractResponse implements ResponseInter
     public const AUTHORIZATION_STATE_WAIT_CODE = 'authorizationStateWaitCode';
     public const AUTHORIZATION_STATE_WAIT_TDLIB_PARAMETERS = 'authorizationStateWaitTdlibParameters';
     public const AUTHORIZATION_STATE_WAIT_ENCRYPTION_KEY = 'authorizationStateWaitEncryptionKey';
+    public const AUTHORIZATION_STATE_LOGGING_OUT = 'authorizationStateLoggingOut';
 
     /** @var string|null */
     private $authorizationState;
@@ -29,6 +30,7 @@ class UpdateAuthorizationState extends AbstractResponse implements ResponseInter
             static::AUTHORIZATION_STATE_WAIT_CODE,
             static::AUTHORIZATION_STATE_WAIT_TDLIB_PARAMETERS,
             static::AUTHORIZATION_STATE_WAIT_ENCRYPTION_KEY,
+            static::AUTHORIZATION_STATE_LOGGING_OUT,
         ])) {
             throw new InvalidResponseException($authorizationState, InvalidResponseException::INVALID_VALUE);
         }

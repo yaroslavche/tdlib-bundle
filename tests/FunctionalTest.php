@@ -37,6 +37,6 @@ class FunctionalTest extends TestCase
     {
         $jsonClient = $this->tdlibService->getJsonClient();
         $this->assertInstanceOf(JsonClient::class, $jsonClient);
-        $this->assertSame('1.3.0', $jsonClient->getOption('version'));
+        $this->assertSame('1.4.0', $jsonClient->getOption('version'));
     }
 }

@@ -15,14 +15,14 @@ class JsonClientTest extends TestCase
     {
         parent::setUp();
         LogConfiguration::setLogVerbosityLevel(LogConfiguration::LVL_FATAL_ERROR);
-        $parameters = Kernel::getBundleConfig()['parameters'] ?? [];
-        $client = Kernel::getBundleConfig()['client'] ?? [];
-        $this->client = new JsonClient($parameters, $client);
+        $tdlibParameters = Kernel::getBundleConfig()['parameters'] ?? [];
+        $clientConfig = Kernel::getBundleConfig()['client'] ?? [];
+        $this->client = new JsonClient($tdlibParameters, $clientConfig);
     }
 
     public function testVersion()
     {
         $clientVersion = $this->client->getOption('version');
-        $this->assertSame('1.3.0', $clientVersion);
+        $this->assertSame('1.4.0', $clientVersion);
     }
 }
