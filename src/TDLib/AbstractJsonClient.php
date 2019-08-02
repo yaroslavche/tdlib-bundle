@@ -86,7 +86,13 @@ abstract class AbstractJsonClient
         if (!$query) {
             throw new InvalidArgumentException();
         }
-        return AbstractResponse::fromRaw($this->jsonClient->query($query));
+        $rawResponse = $this->jsonClient->query($query);
+        $response = AbstractResponse::fromRaw($rawResponse);
+        $responseClass = sprintf('%s\\Response\\%s', __NAMESPACE__, ucfirst($response->getType()));
+        if (class_exists($responseClass)) {
+            $response = new $responseClass($rawResponse);
+        }
+        return $response;
     }
 
     /**
