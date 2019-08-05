@@ -19,7 +19,7 @@ class FunctionalTest extends TestCase
     private $tdlibService;
 
     /** @todo need to create a mock */
-    protected function setUp(): void
+    /*protected function setUp(): void
     {
         $this->kernel = new Kernel();
         $this->kernel->boot();
@@ -33,10 +33,9 @@ class FunctionalTest extends TestCase
         $this->assertInstanceOf(TDLib::class, $this->tdlibService);
     }
 
-    public function testJsonClient()
+    protected function tearDown(): void
     {
-        $jsonClient = $this->tdlibService->getJsonClient();
-        $this->assertInstanceOf(JsonClient::class, $jsonClient);
-        $this->assertSame('1.4.0', $jsonClient->getOption('version'));
-    }
+        parent::tearDown();
+        td_json_client_destroy($this->tdlibService->getJsonClient()->getJsonClient());
+    }*/
 }

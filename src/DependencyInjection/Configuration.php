@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('client')
                     ->children()
+                        ->scalarNode('phone_number')->defaultNull()->end()
                         ->scalarNode('encryption_key')->defaultValue('')->end()
                         ->floatNode('default_timeout')->defaultValue(0.5)->end()
                         ->booleanNode('auto_init')->defaultTrue()->end()

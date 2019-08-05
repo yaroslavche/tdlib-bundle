@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace Yaroslavche\TDLibBundle\TDLib;
 
+use RuntimeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use TDApi\TDLibParameters;
 use TDLib\JsonClient;
 use Yaroslavche\TDLibBundle\Exception\InvalidArgumentException;
+use Yaroslavche\TDLibBundle\Exception\InvalidAuthenticationCodeException;
 use Yaroslavche\TDLibBundle\Exception\InvalidDatabaseEncryptionKeyException;
+use Yaroslavche\TDLibBundle\Exception\InvalidPhoneNumberException;
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
 use Yaroslavche\TDLibBundle\Exception\InvalidTdlibParametersException;
 use Yaroslavche\TDLibBundle\TDLib\Response\UpdateAuthorizationState;
@@ -29,11 +32,14 @@ abstract class AbstractJsonClient
     private $authorizationState;
 
     /**
+     * @todo pass RequestStack into constructor?
      * AbstractClient constructor.
      * @param string[]|int[]|bool[] $tdlibParameters
      * @param string[]|int[]|bool[] $clientConfig
      * @throws InvalidArgumentException
+     * @throws InvalidAuthenticationCodeException
      * @throws InvalidDatabaseEncryptionKeyException
+     * @throws InvalidPhoneNumberException
      * @throws InvalidResponseException
      * @throws InvalidTdlibParametersException
      */
@@ -64,12 +70,13 @@ abstract class AbstractJsonClient
          *      - check other important (?)
          */
         $this->clientConfig = $this->resolve($clientConfig, [
+            'phone_number' => null,
             'encryption_key' => '',
             'default_timeout' => 0.5,
             'auto_init' => true
         ]);
         if (false !== $this->clientConfig['auto_init']) {
-            $this->initJsonClient();
+            $this->initJsonClient($clientConfig['phone_number']);
         }
     }
 
@@ -87,6 +94,7 @@ abstract class AbstractJsonClient
         if (!$query) {
             throw new InvalidArgumentException();
         }
+        /** @todo invalid timeout parameter */
         $rawResponse = $this->jsonClient->query($query); //, $timeout ?? $this->clientConfig['default_timeout']);
         $response = AbstractResponse::fromRaw($rawResponse);
         $responseClass = sprintf('%s\\Response\\%s', __NAMESPACE__, ucfirst($response->getType()));
@@ -106,13 +114,16 @@ abstract class AbstractJsonClient
     }
 
     /**
+     * @param string|null $phoneNumber
      * @param bool|null $force
      * @throws InvalidArgumentException
+     * @throws InvalidAuthenticationCodeException
      * @throws InvalidDatabaseEncryptionKeyException
+     * @throws InvalidPhoneNumberException
      * @throws InvalidResponseException
      * @throws InvalidTdlibParametersException
      */
-    public function initJsonClient(?bool $force = null): void
+    public function initJsonClient(?string $phoneNumber = null, ?bool $force = null): void
     {
         if (!$force && $this->jsonClient instanceof JsonClient) {
             return;
@@ -135,6 +146,29 @@ abstract class AbstractJsonClient
         }
         /** check all received responses */
         $this->handleResponses();
+
+        if (null !== $phoneNumber && $this->authorizationState === UpdateAuthorizationState::AUTHORIZATION_STATE_WAIT_PHONE_NUMBER) {
+            $setAuthenticationPhoneNumberResponse = $this->query('setAuthenticationPhoneNumber', [
+                'phone_number' => $phoneNumber
+            ]);
+            if ($setAuthenticationPhoneNumberResponse->getType() !== 'ok') {
+                throw new InvalidPhoneNumberException();
+            }
+            $this->handleResponses();
+        }
+
+        if ($this->authorizationState === UpdateAuthorizationState::AUTHORIZATION_STATE_WAIT_CODE) {
+            $code = $_POST[sprintf('code_%s', $phoneNumber)] ?? null;
+            if (null === $code) {
+                throw new RuntimeException(sprintf('Please set authentication code for %s', $phoneNumber));
+            }
+            $checkAuthenticationCodeResponse = $this->query('checkAuthenticationCode', [
+                'code' => $code
+            ]);
+            if ($checkAuthenticationCodeResponse->getType() !== 'ok') {
+                throw new InvalidAuthenticationCodeException();
+            }
+        }
     }
 
     /**
@@ -204,6 +238,6 @@ abstract class AbstractJsonClient
         if (!$updateAuthorizationStateResponse instanceof UpdateAuthorizationState) {
             throw new InvalidArgumentException();
         }
-        $this->authorizationState = $updateAuthorizationStateResponse->getType();
+        $this->authorizationState = $updateAuthorizationStateResponse->getAuthorizationState();
     }
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Yaroslavche\TDLibBundle\Service;
 
 use Yaroslavche\TDLibBundle\Exception\InvalidArgumentException;
+use Yaroslavche\TDLibBundle\Exception\InvalidAuthenticationCodeException;
 use Yaroslavche\TDLibBundle\Exception\InvalidDatabaseEncryptionKeyException;
+use Yaroslavche\TDLibBundle\Exception\InvalidPhoneNumberException;
 use Yaroslavche\TDLibBundle\Exception\InvalidResponseException;
 use Yaroslavche\TDLibBundle\Exception\InvalidTdlibParametersException;
 use Yaroslavche\TDLibBundle\TDLib\JsonClient;
@@ -22,6 +24,8 @@ class TDLib
      * @throws InvalidDatabaseEncryptionKeyException
      * @throws InvalidResponseException
      * @throws InvalidTdlibParametersException
+     * @throws InvalidAuthenticationCodeException
+     * @throws InvalidPhoneNumberException
      */
     public function __construct(array $parameters, array $client)
     {

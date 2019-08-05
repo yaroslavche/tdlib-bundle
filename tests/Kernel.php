@@ -2,6 +2,7 @@
 
 namespace Yaroslavche\TDLibBundle\Tests;
 
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Exception\LoaderLoadException;
@@ -45,11 +46,15 @@ class Kernel extends SymfonyKernel
      */
     public static function getBundleConfig(): array
     {
+        if (!isset($_ENV['API_ID']) || !isset($_ENV['API_HASH']) || !isset($_ENV['PHONE_NUMBER'])) {
+            throw new RuntimeException('Some of API_ID, API_HASH, PHONE_NUMBER environment variable is not defined. You need to define environment variables in phpunit.xml (copy from dist).');
+        }
+        $_POST[sprintf('code_%s', $_ENV['PHONE_NUMBER'])] = $_ENV['CODE'];
         return [
             'parameters' => [
                 /** required */
-                TDLibParameters::API_ID => 11111,
-                TDLibParameters::API_HASH => '1111111111111111111111111',
+                TDLibParameters::API_ID => (int)$_ENV['API_ID'],
+                TDLibParameters::API_HASH => $_ENV['API_HASH'],
                 TDLibParameters::SYSTEM_LANGUAGE_CODE => 'en',
                 TDLibParameters::DEVICE_MODEL => 'test',
                 TDLibParameters::SYSTEM_VERSION => 'stable',
@@ -65,9 +70,10 @@ class Kernel extends SymfonyKernel
                 TDLibParameters::DATABASE_DIRECTORY => '/var/tmp/tdlib',
             ],
             'client' => [
+                'phone_number' => $_ENV['PHONE_NUMBER'],
                 'encryption_key' => '',
-                'default_timeout' => 3,
-                'auto_init' => true,
+                'default_timeout' => 10,
+                'auto_init' => false,
             ]
         ];
     }

@@ -5,6 +5,7 @@ namespace Yaroslavche\TDLibBundle\Tests\TDLib;
 use PHPUnit\Framework\TestCase;
 use TDApi\LogConfiguration;
 use Yaroslavche\TDLibBundle\TDLib\JsonClient;
+use Yaroslavche\TDLibBundle\TDLib\Response\UpdateAuthorizationState;
 use Yaroslavche\TDLibBundle\Tests\Kernel;
 
 class JsonClientTest extends TestCase
@@ -18,6 +19,7 @@ class JsonClientTest extends TestCase
         $tdlibParameters = Kernel::getBundleConfig()['parameters'] ?? [];
         $clientConfig = Kernel::getBundleConfig()['client'] ?? [];
         $this->client = new JsonClient($tdlibParameters, $clientConfig);
+        $this->client->initJsonClient($clientConfig['phone_number']);
     }
 
     public function testVersion()
@@ -25,4 +27,6 @@ class JsonClientTest extends TestCase
         $clientVersion = $this->client->getOption('version');
         $this->assertSame('1.4.0', $clientVersion);
     }
+
+    /** @todo have problems in tests =( */
 }

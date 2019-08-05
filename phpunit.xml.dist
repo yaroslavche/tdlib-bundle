@@ -11,6 +11,11 @@
         <ini name="intl.default_locale" value="en" />
         <ini name="intl.error_level" value="0" />
         <ini name="memory_limit" value="-1" />
+        <env name="KERNEL_CLASS" value="Yaroslavche\TDLibBundle\Tests\Kernel" />
+        <env name="API_ID" value="" />
+        <env name="API_HASH" value="" />
+        <env name="PHONE_NUMBER" value="" />
+        <env name="CODE" value="" />
     </php>
 
     <testsuites>
