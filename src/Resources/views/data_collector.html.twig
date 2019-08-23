@@ -1,0 +1,38 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <div class="sf-toolbar-icon">
+            <span class="sf-toolbar-value">{{ collector.version }}</span>
+            <span class="sf-toolbar-label">TDLib</span>
+        </div>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>TDLib client version</b>
+            <span class="sf-toolbar-status">{{ collector.version }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Authorization State</b>
+            <span class="sf-toolbar-status">{{ collector.authorizationState.type }}</span>
+        </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+{% endblock %}
+
+{% block head %}
+    {{- parent() -}}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon"><img src="" alt="TDLib"/></span>
+        <strong>TDLib</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {{ collector.version }}
+{% endblock %}

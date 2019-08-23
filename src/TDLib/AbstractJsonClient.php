@@ -5,6 +5,7 @@ namespace Yaroslavche\TDLibBundle\TDLib;
 
 use RuntimeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use TDApi\LogConfiguration;
 use TDApi\TDLibParameters;
 use TDLib\JsonClient;
 use Yaroslavche\TDLibBundle\Exception\InvalidArgumentException;
@@ -45,6 +46,7 @@ abstract class AbstractJsonClient
      */
     public function __construct(array $tdlibParameters, array $clientConfig)
     {
+        LogConfiguration::setLogVerbosityLevel(LogConfiguration::LVL_FATAL_ERROR);
         $this->optionsResolver = new OptionsResolver();
         $this->tdlibParameters = $this->resolve($tdlibParameters, [
             TDLibParameters::USE_TEST_DC => true,
