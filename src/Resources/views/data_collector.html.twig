@@ -35,4 +35,6 @@
 
 {% block panel %}
     {{ collector.version }}
+    {{ dump(collector.authorizationState) }}
+    {{ dump(collector.me) }}
 {% endblock %}

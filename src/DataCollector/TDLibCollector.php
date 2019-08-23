@@ -7,14 +7,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Yaroslavche\TDLibBundle\Service\TDLib;
+use Yaroslavche\TDLibBundle\TDLib\JsonClient;
 use Yaroslavche\TDLibBundle\TDLib\ResponseInterface;
 
 class TDLibCollector extends DataCollector
 {
     const DATA_COLLECTOR_NAME = 'yaroslavche_tdlib.data_collector.tdlib';
 
-    /** @var TDLib $config */
-    private $tdlib;
+    /** @var JsonClient $jsonClient */
+    private $jsonClient;
 
     /**
      * ConfigCollector constructor.
@@ -22,7 +23,7 @@ class TDLibCollector extends DataCollector
      */
     public function __construct(TDLib $tdlib)
     {
-        $this->tdlib = $tdlib;
+        $this->jsonClient = $tdlib->getJsonClient();
     }
 
 
@@ -34,11 +35,9 @@ class TDLibCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, Exception $exception = null)
     {
-        try {
-            $this->data['version'] = $this->tdlib->getJsonClient()->getOption('version');
-            $this->data['authorizationState'] = $this->tdlib->getJsonClient()->getAuthorizationState();
-        } catch (Exception $exception) {
-        }
+        $this->data['version'] = $this->jsonClient->getOption('version');
+        $this->data['authorizationState'] = $this->jsonClient->getAuthorizationState();
+        $this->data['me'] = $this->jsonClient->getMe();
     }
 
     /**
@@ -70,5 +69,13 @@ class TDLibCollector extends DataCollector
     public function getAuthorizationState(): ResponseInterface
     {
         return $this->data['authorizationState'];
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getMe(): ResponseInterface
+    {
+        return $this->data['me'];
     }
 }
