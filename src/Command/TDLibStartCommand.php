@@ -64,8 +64,11 @@ class TDLibWS implements MessageComponentInterface
 
     public function onMessage(ConnectionInterface $from, $message)
     {
+
+        $this->io->writeln(sprintf('Request: %s', $message));
         if ($this->ready) {
             $response = $this->jsonClient->query($message);
+            $this->io->writeln(sprintf('Response: %s', $response));
             $from->send($response);
         } else {
             $from->send(json_encode(['@type' => 'error']));
@@ -79,7 +82,7 @@ class TDLibWS implements MessageComponentInterface
 
     public function onError(ConnectionInterface $conn, Exception $exception)
     {
-        $this->io->writeln('onError ' . $exception->getMessage());
+        $conn->send(json_encode(['@type' => 'error', 'message' => $exception->getMessage()]));
     }
 }
 
@@ -94,23 +97,23 @@ class TDLibStartCommand extends Command
             ->addOption('port', null, InputOption::VALUE_OPTIONAL, 'Port', 8080)
             ->addOption('api_id', null, InputOption::VALUE_REQUIRED, 'API Id')
             ->addOption('api_hash', null, InputOption::VALUE_REQUIRED, 'API Hash')
-            ->addOption('phone_number', null, InputOption::VALUE_REQUIRED, 'Phone number');
+            ->addOption('encryption_key', null, InputOption::VALUE_REQUIRED, 'Phone number');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
         $port = $input->getOption('port');
-        $phoneNumber = $input->getOption('phone_number');
         $apiId = $input->getOption('api_id');
         $apiHash = $input->getOption('api_hash');
-        if (null === $phoneNumber || null === $apiId || null === $apiHash) {
+        $encryptionKey = $input->getOption('encryption_key') ?? '';
+        if (null === $apiId || null === $apiHash) {
             $io->error('Please fill required options. Type --help for view options list');
             return 1;
         }
 
         $tdlibParameters = [
-            TDLibParameters::USE_TEST_DC => true,
+            TDLibParameters::USE_TEST_DC => false,
             TDLibParameters::DATABASE_DIRECTORY => '/var/tmp/tdlib',
             TDLibParameters::FILES_DIRECTORY => '/var/tmp/tdlib',
             TDLibParameters::USE_FILE_DATABASE => true,
@@ -127,7 +130,7 @@ class TDLibStartCommand extends Command
             TDLibParameters::IGNORE_FILE_NAMES => true,
         ];
         $clientConfig = [
-            'phone_number' => $phoneNumber
+            'encryption_key' => $encryptionKey
         ];
 
         $server = IoServer::factory(

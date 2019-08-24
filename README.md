@@ -1,4 +1,111 @@
-## Installation and configuration
+## Installation
+```bash
+$ composer require yaroslavche/tdlib-bundle
+```
+
+## WebSocket server with initialized JsonClient (experimental)
+Create console application (`console.php`):
+```php
+#!/usr/bin/env php
+<?php
+# console.php
+
+require './vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Yaroslavche\TDLibBundle\Command\TDLibStartCommand;
+
+$application = new Application();
+
+$application->add(new TDLibStartCommand());
+
+$application->run(); 
+
+```
+and run:
+```bash
+$ php console.php tdlib:start --port=12345 --api_id=11111 --api_hash=abcdef1234567890abcdef1234567890
+```
+Then create HTML file (`index.html`)
+```html
+<!-- index.html -->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>TDLib WebSocket Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="tdlib">
+    <div class="ui container">
+        <div class="ui comments fluid">
+            <form class="ui reply form">
+                <div class="field">
+                    <textarea ref="query">{"@type": "getAuthorizationState"}</textarea>
+                </div>
+                <div class="ui primary submit labeled icon button" @click="query">
+                    <i class="icon paper plane"></i> Query
+                </div>
+            </form>
+            <div class="comment" v-for="(entry, key) in log" :key="key">
+                <div class="content">
+                    <div class="metadata">
+                        <div class="date">#{{ key }}</div>
+                    </div>
+                    <div class="text">
+                        <p>{{ entry }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+    const tdlib = new Vue({
+        el: '#tdlib',
+        data: {
+            ws: null,
+            log: [],
+        },
+        methods: {
+            query: function () {
+                const query = this.$refs.query.value;
+                this.log.push('Query: ' + query);
+                this.ws.send(query);
+            },
+            initWSConnection: function () {
+                this.ws = new WebSocket('ws://127.0.0.1:12345');
+                this.ws.onopen = () => {
+                    this.log.push('Socket connection opened properly.');
+                };
+
+                this.ws.onmessage = (event) => {
+                    this.log.push('Response: ' + event.data);
+                };
+            }
+        },
+        mounted() {
+            this.initWSConnection();
+        }
+    });
+</script>
+</body>
+</html>
+```
+Open in browser. Queries:
+```
+{"@type": "setAuthenticationPhoneNumber", "phone_number": "+380991234567"}
+{"@type": "checkAuthenticationCode", "code": "12345"}
+```
+And [others](https://core.telegram.org/tdlib/docs/classtd_1_1td__api_1_1_function.html).
+
+# Symfony bundle configuration
 Create file `config/packages/yaroslavche_tdlib.yaml` with following content
 ```yaml
 # config/packages/yaroslavche_tdlib.yaml
@@ -26,34 +133,6 @@ yaroslavche_tdlib:
     default_timeout: 0.5
     auto_init: false
 ```
-and install bundle with `composer`
-```bash
-composer require yaroslavche/tdlib-bundle
-```
-
-## WebSocket server with initialized JsonClient (experimental)
-```bash
-$ bin/console tdlib:start --port=12345 --api_id=11111 --api_hash=abcdef1234567890abcdef1234567890 --phone_number=+380991234567
-```
-```js
-const ws = new WebSocket('ws://127.0.0.1:12345');
-ws.onopen = function () {
-    console.log('Socket connection opened properly.');
-    ws.send('{"@type": "getAuthorizationState"}');
-    ws.send('{"@type": "getMe"}');
-};
-
-ws.onmessage = function (evt) {
-    console.log(evt.data);
-};
-```
-will produce
-```log
-Socket connection opened properly.
-{"@type":"authorizationStateReady","@extra":1681692777}
-{"@type":"user","id":11111,"first_name":"yaroslav","last_name":"","username":"","phone_number":"380991234567","status":{"@type":"userStatusOffline","was_online":1565015419},"outgoing_link":{"@type":"linkStateKnowsPhoneNumber"},"incoming_link":{"@type":"linkStateKnowsPhoneNumber"},"is_verified":false,"is_support":false,"restriction_reason":"","have_access":true,"type":{"@type":"userTypeRegular"},"language_code":"","@extra":1714636915}
-```
-For now can be checked on profiler data collector page (will be removed later).
 
 ## Data Collector
 With installed `symfony/profiler-pack`.
