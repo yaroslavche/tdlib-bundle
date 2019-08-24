@@ -33,8 +33,6 @@ abstract class AbstractJsonClient
     private $authorizationState;
 
     /**
-     * @todo pass RequestStack into constructor?
-     * AbstractClient constructor.
      * @param string[]|int[]|bool[] $tdlibParameters
      * @param string[]|int[]|bool[] $clientConfig
      * @throws InvalidArgumentException
@@ -43,10 +41,11 @@ abstract class AbstractJsonClient
      * @throws InvalidPhoneNumberException
      * @throws InvalidResponseException
      * @throws InvalidTdlibParametersException
+     * @todo pass RequestStack into constructor?
+     * AbstractClient constructor.
      */
     public function __construct(array $tdlibParameters, array $clientConfig)
     {
-        LogConfiguration::setLogVerbosityLevel(LogConfiguration::LVL_FATAL_ERROR);
         $this->optionsResolver = new OptionsResolver();
         $this->tdlibParameters = $this->resolve($tdlibParameters, [
             TDLibParameters::USE_TEST_DC => true,

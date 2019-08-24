@@ -14,12 +14,18 @@
         <service id="Yaroslavche\TDLibBundle\Service\TDLib"
                  alias="yaroslavche_tdlib.service.tdlib" public="false"/>
 
+        <!-- Data collector -->
         <service id="Yaroslavche\TDLibBundle\DataCollector\TDLibCollector" public="false">
             <argument type="service" id="yaroslavche_tdlib.service.tdlib"/>
             <tag name="data_collector"
                  template="@YaroslavcheTDLib/data_collector.html.twig"
                  id="yaroslavche_tdlib.data_collector.tdlib"
             />
+        </service>
+
+        <!-- Console commands -->
+        <service id="Yaroslavche\TDLibBundle\Command\TDLibStartCommand">
+            <tag name="console.command" command="tdlib:start"/>
         </service>
     </services>
 </container>

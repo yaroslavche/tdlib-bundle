@@ -37,4 +37,20 @@
     {{ collector.version }}
     {{ dump(collector.authorizationState) }}
     {{ dump(collector.me) }}
+    <script>
+        const ws = new WebSocket('ws://127.0.0.1:12345');
+        ws.onopen = function () {
+            console.log('Socket connection opened properly.');
+            ws.send('{"@type": "getAuthorizationState"}');
+            ws.send('{"@type": "getMe"}');
+        };
+
+        ws.onmessage = function (evt) {
+            console.log(evt.data);
+        };
+
+        ws.onclose = function () {
+            console.log("Socket connection closed properly.");
+        };
+    </script>
 {% endblock %}

@@ -21,14 +21,44 @@ yaroslavche_tdlib:
     enable_storage_optimizer: true
     ignore_file_names: true
   client:
+    phone_number: "+380991234567"
     encryption_key: ""
     default_timeout: 0.5
-    auto_init: true
+    auto_init: false
 ```
 and install bundle with `composer`
 ```bash
 composer require yaroslavche/tdlib-bundle
 ```
+
+## WebSocket server with initialized JsonClient (experimental)
+```bash
+$ bin/console tdlib:start --port=12345 --api_id=11111 --api_hash=abcdef1234567890abcdef1234567890 --phone_number=+380991234567
+```
+```js
+const ws = new WebSocket('ws://127.0.0.1:12345');
+ws.onopen = function () {
+    console.log('Socket connection opened properly.');
+    ws.send('{"@type": "getAuthorizationState"}');
+    ws.send('{"@type": "getMe"}');
+};
+
+ws.onmessage = function (evt) {
+    console.log(evt.data);
+};
+```
+will produce
+```log
+Socket connection opened properly.
+{"@type":"authorizationStateReady","@extra":1681692777}
+{"@type":"user","id":11111,"first_name":"yaroslav","last_name":"","username":"","phone_number":"380991234567","status":{"@type":"userStatusOffline","was_online":1565015419},"outgoing_link":{"@type":"linkStateKnowsPhoneNumber"},"incoming_link":{"@type":"linkStateKnowsPhoneNumber"},"is_verified":false,"is_support":false,"restriction_reason":"","have_access":true,"type":{"@type":"userTypeRegular"},"language_code":"","@extra":1714636915}
+```
+For now can be checked on profiler data collector page (will be removed later).
+
+## Data Collector
+With installed `symfony/profiler-pack`.
+
+*If reached timeout exception, then seems bundle config is passed, but can't connect to client. Should configure for real one `api_id`, `api_hash` and `phone_number` (can be `test_dc`). 
 
 ## Usage
 
@@ -77,6 +107,3 @@ final class GetMeController
     }
 }
 ```
-
-## Data Collector
-With installed `symfony/profiler-pack`
